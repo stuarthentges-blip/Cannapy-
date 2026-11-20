@@ -85,7 +85,7 @@
     </style>
     
 </head>
-<body><div id="boot-warn" style="margin:12px;padding:12px;border:1px solid #F59E0B;border-radius:12px;background:#1A1608;color:#FBBF24;font:15px/1.4 system-ui,sans-serif">If you only see this message, your viewer (Messages, Files, email or a preview) blocks scripts. Open the game in Safari or Chrome from a web link, then tap Share and Add to Home Screen.</div>
+<body><script>window.CANNAPY_SB={url:"https://yxaqnzapkvrneyokmmgp.supabase.co",key:"sb_publishable_9x5xzTZ6IDGg6KNuYQw6wg_fAOFabuf"};</script><div id="boot-warn" style="margin:12px;padding:12px;border:1px solid #F59E0B;border-radius:12px;background:#1A1608;color:#FBBF24;font:15px/1.4 system-ui,sans-serif">If you only see this message, your viewer (Messages, Files, email or a preview) blocks scripts. Open the game in Safari or Chrome from a web link, then tap Share and Add to Home Screen.</div>
 
     <div class="drawer-backdrop" id="drawer-backdrop" onclick="toggleDrawer()"></div>
     <div class="slide-drawer" id="slide-drawer">
@@ -1520,7 +1520,7 @@ window.hqCup=function(){const g=gameState,m=g.mothers.find(x=>x.id===(Q('#cup-se
 window.hqPrestige=function(){const lp=Math.floor(gameState.level/2)+Math.floor(gameState.cash/2e6);
   showModal('Sell the brand?','This resets cash, level, land, grows, vault and dispensaries. You gain <b>'+lp+' Legacy</b> points.<br><button class="btn btn-rose" onclick="doPrestige()">Yes, sell and start over</button>')};
 window.doPrestige=function(){const g=gameState,lp=Math.floor(g.level/2)+Math.floor(g.cash/2e6),f=JSON.parse(INIT);
-  ['tech','staff','acq','golds','missions','mk','daily','rivals','k420','cupNext','set','stats','badges','news','auto','tutDone','tutI','legal','ops','pass','legend','lang','disc','coll','rel','brand','dispx','mkt','mapkey','mc','msn','unl','ts','cbd','arena','strip','rnd','online','net'].forEach(k=>{if(g[k]!==undefined)f[k]=g[k]});
+  ['tech','staff','acq','golds','missions','mk','daily','rivals','k420','cupNext','set','stats','badges','news','auto','tutDone','tutI','legal','ops','pass','legend','lang','disc','coll','rel','brand','dispx','mkt','mapkey','mc','msn','unl','ts','cbd','x26','arena','strip','rnd','online','net'].forEach(k=>{if(g[k]!==undefined)f[k]=g[k]});
   f.strains=g.strains;f.breeders=g.breeders;f.breeders.forEach(b=>b.contractActive=false);
   f.legacy=(g.legacy||0)+lp;f.cash=50000+f.legacy*5000;f.ev={next:Date.now()+120000,log:[]};f.savedAt=Date.now();
   gameState=f;ensure();gameState.b2bOrders=[newOrder(),newOrder()];closeModal();chk();renderAll();saveGameSave();
@@ -1760,7 +1760,7 @@ const chain=s=>{const a=[s.name];let c=s,k=0;while(c.parent&&k++<8){const p=c.pa
 const SC={std:['Standard start','$50K and the Humboldt estate'],mid:['Midwest bootstrap','$5K and a prairie estate (15% tax)'],disp:['Inherited dispensary','$20K, a struggling dispensary, no grow house'],cash:['Seed money','$250K but no mother cuts']};
 window.scenario=function(k){showModal('Start new scenario?','This resets your empire. Research, staff, trophies and Legacy are kept.<br><button class="btn btn-rose" onclick="doScenario(\''+k+'\')">Start: '+SC[k][0]+'</button>')};
 window.doScenario=function(k){const g=gameState,f=JSON.parse(window.INIT_STATE);
-  ['tech','staff','acq','golds','missions','mk','daily','rivals','k420','cupNext','set','stats','badges','news','auto','tutDone','tutI','legal','legacy','ops','pass','legend','lang','disc','coll','rel','brand','dispx','mkt','mapkey','mc','msn','unl','ts','cbd','arena','rnd','online','net'].forEach(x=>{if(g[x]!==undefined)f[x]=g[x]});
+  ['tech','staff','acq','golds','missions','mk','daily','rivals','k420','cupNext','set','stats','badges','news','auto','tutDone','tutI','legal','legacy','ops','pass','legend','lang','disc','coll','rel','brand','dispx','mkt','mapkey','mc','msn','unl','ts','cbd','x26','arena','rnd','online','net'].forEach(x=>{if(g[x]!==undefined)f[x]=g[x]});
   f.strains=g.strains;f.breeders=g.breeders;f.breeders.forEach(b=>b.contractActive=false);f.cash=50000+(f.legacy||0)*5000;f.ev={next:Date.now()+120000,log:[]};f.savedAt=Date.now();
   if(k==='mid'){f.cash=5000;Object.assign(f.ownedProperties[0],{name:'Prairie Estate',lat:39,lng:-98,region:'Midwest Corridor',taxRate:15});f.legal=Object.assign(f.legal||{},{'Midwest Corridor':1})}
   else if(k==='disp'){f.cash=20000;f.canopyGrows=[];f.ownedProperties=[{id:'prop-d',name:'Corner Dispensary',lat:34.05,lng:-118.24,acres:5,region:'West Coast Zone',taxRate:8,hazard:'',facility:'Dispensary',wings:[]}];f.dispensaries[0].markup=60;f.dispensaries[0].budtenderLevel=1}
@@ -2429,7 +2429,7 @@ const val=(r,k)=>k==='ss'?r.ss:r[k];
 const rank=(R,k)=>{const s=R.slice().sort((a,b)=>val(b,k)-val(a,k));return{s,me:s.findIndex(r=>r.me)+1}};
 
 /* backend (optional Supabase REST) */
-const H=(b,p)=>({apikey:b.key,Authorization:'Bearer '+((window.ONL&&ONL.token())||b.key),'Content-Type':'application/json',Prefer:p||''});
+const H=(b,p)=>{const t=window.ONL&&ONL.token&&ONL.token(),h={apikey:b.key,'Content-Type':'application/json',Prefer:p||''};if(t)h.Authorization='Bearer '+t;else if(!/^sb_/.test(b.key))h.Authorization='Bearer '+b.key;return h};
 async function sync(){const b=be();if(!b||!(window.ONL&&ONL.uid()))return;const m=me(),a=A();
   try{const r=await fetch(b.url+'/rest/v1/players?on_conflict=uid',{method:'POST',headers:H(b,'resolution=merge-duplicates,return=minimal'),body:JSON.stringify({uid:m.uid,name:m.name,emoji:m.emoji,nw:m.nw,inc:m.inc,level:m.level,coll:m.coll,golds:m.golds,sw:a.nw0,wk:a.wk,snap:window.ONL?ONL.snap():null})});
     if(!r.ok)throw 0;const g=await fetch(b.url+'/rest/v1/players?select=*&order=nw.desc&limit=100',{headers:H(b)});REAL=await g.json();ST='🟢 Connected · '+REAL.length+' players'}catch(e){ST='🔴 Server not reachable (showing sample players)'}}
@@ -2912,9 +2912,9 @@ const CON=[
 ['Marshawn Lynch (NFL)','athlete',2,'A','Founder of Dodi Blunts, a California-based cannabis brand supporting the Last Prisoner Project and expungement efforts.'],
 ['Ricky Williams (NFL)','athlete',2,'A','One of the earliest active athletes to openly champion cannabis over prescription painkillers, later founding the lifestyle brand Highsman.'],
 ['Mike Tyson (Boxing)','athlete',3,'D','Founder of Tyson 2.0, one of the most widely distributed celebrity cannabis brands, featuring flower, edibles (Mike Bites), and vapes.'],
-['Nate Diaz (UFC/MMA)','athlete',2,'M','Pioneer in normalizing cannabis in combat sports; co-founded Game Up Nutrition (CBD) and advocates for THC policy reform in athletic commissions.'],
-['Nick Diaz (UFC/MMA)','athlete',2,'M','Pioneer in normalizing cannabis in combat sports; co-founded Game Up Nutrition (CBD) and advocates for THC policy reform in athletic commissions.'],
-['Megan Rapinoe (Soccer)','athlete',3,'M','Co-founder of Mendi, a hemp-derived CBD sports recovery brand aimed at athletes.'],
+['Nate Diaz (UFC/MMA)','athlete',2,'M','One of two brothers behind Kill_4209, a cannabis brand started in 2021, and Game Up Nutrition, a CBD brand founded in 2017.'],
+['Nick Diaz (UFC/MMA)','athlete',2,'M','One of two brothers behind Kill_4209, a cannabis brand started in 2021, and Game Up Nutrition, a CBD brand founded in 2017.'],
+['Randy Moss (NFL)','athlete',2,'A','NFL Hall of Famer and one of the first NFL players to speak openly about using marijuana while still playing.'],
 ['Sue Bird (WNBA)','athlete',3,'M','Co-founder of Mendi, a hemp-derived CBD sports recovery brand aimed at athletes.'],
 ['Rob Gronkowski (NFL)','athlete',2,'M','Vocal advocate for CBD in post-career pain management, partnering with brands like CBDMedic to push for NFL policy changes.'],
 ['JR Smith (NBA)','athlete',1,'A','Openly vocal about cannabis use during and after his NBA career.'],
@@ -2970,7 +2970,7 @@ const CON=[
 ['Stephen Marley','music',2,'S','Carries on Bob Marley’s Rastafarian sacrament and advocacy through Marley Natural, a global lifestyle and cannabis brand.','Reggae'],
 ['Damian Marley','music',2,'Y','Carries on Bob Marley’s advocacy through Marley Natural and operates California cultivation facilities.','Reggae'],
 ['Rohan Marley','music',1,'S','Carries on Bob Marley’s Rastafarian sacrament and advocacy through Marley Natural, a global lifestyle and cannabis brand.','Reggae'],
-['Peter Tosh','music',1,'A','Foundational reggae pioneer whose 1976 anthem “Legalize It” remains one of the most influential protest songs in cannabis history.','Reggae']
+['Collie Buddz','music',1,'A','Bermudian reggae artist whose music and merch lean into cannabis culture.','Reggae']
 ,['ZaZa Genetics','grow',2,'Y','New Jersey breeder who makes educational videos for indoor gardeners and runs Breeder University, a cannabis breeding school.'],
 ['G7 and LMC','grow',1,'P','YouTube cannabis grow creators. Details not yet verified.'],
 ['HomegrowTV','grow',1,'P','YouTube cannabis home-grow channel. Details not yet verified.'],
@@ -3001,6 +3001,7 @@ const CON=[
 ['Houseplant','gear',3,'S','Co-founded by Seth Rogen: mid-century-inspired ceramic ashtrays, tabletop lighters, and rolling trays.'],
 ['NWTN Home','gear',1,'A','Decor-friendly gravity bongs and bubblers crafted to blend into home interiors.'],
 ['Edie Parker','gear',2,'S','Colorful, retro-inspired acrylic and hand-blown glass pipes, lighters, and stash accessories.']
+,['Conor McGregor (UFC/MMA)','athlete',3,'A','UFC star whose Instagram story of him smoking a blunt made headlines in 2021.']
 ];
 const DROPS={'Wiz Khalifa':'Khalifa Kush','Freddie Gibbs':'Freddie Kane OG'};
 const TITLE={creator:'🎬 Creator deals',comedy:'🎙️ Comedy &amp; podcast network',grow:'🌱 Grow mentors',hash:'💨 Dab, glass &amp; hash experts',culinary:'🍽️ Culinary &amp; beverage partners',science:'🔬 Scientific advisors',policy:'📰 Policy &amp; press',athlete:'🏅 Athlete ambassadors',music:'🎤 Artists &amp; festival headliners',celeb:'⭐ Celebrity brand founders',media:'🎧 Industry media',brand:'🏷️ Brand partnerships',gear:'🛠️ Gear &amp; accessory partners'};
@@ -3252,6 +3253,7 @@ window.newProgGame=function(){if(!confirm('This copies your current save to the 
 /* Cannapy pass 24 overlay: feature gates by level (progressive mode), strain data (type, THC, terpenes), breeder locations */
 (function(){
 const w0=document.getElementById('boot-warn');if(w0)w0.remove();
+try{if(!localStorage.getItem('cannapy_backend')&&window.CANNAPY_SB)localStorage.setItem('cannapy_backend',JSON.stringify(window.CANNAPY_SB))}catch(e){}
 const E=escapeHTML,G=()=>gameState,prog=()=>G().unl&&G().unl.mode==='prog';
 window.LVG=n=>prog()?({10:300,12:200}[n]||n):n;
 
@@ -3295,6 +3297,112 @@ window.levelInfo=function(){lvi();if(!prog())return;const g=G(),L=g.level,body=Q
 function locLines(){document.querySelectorAll('#mod-breeder-contracts .card, #mod-master-breeders .card').forEach(c=>{if(c.querySelector('.bloc'))return;const t=c.querySelector('.card-title');if(!t)return;const nm=t.textContent.replace(/\s*(Common|Rare|Elite|Ultra)\s*$/,'').trim(),b=G().breeders.find(x=>nm.includes(x.name)),l=b&&loc(b.name);if(l)t.insertAdjacentHTML('afterend','<div class="card-meta bloc">📍 '+E(l)+'</div>')})}
 const r24=window.renderAll;window.renderAll=function(){r24();locLines()};
 const i24=window.onload;window.onload=function(){i24();const sm=window.switchModule;window.switchModule=function(id){if(lockedPg(id)){const f=FG[id];showModal('🔒 '+E(f[1]),'<div class="card-meta">This unlocks at level <b>'+f[0]+'</b>. You are level '+G().level+'.</div>');return}sm(id)}};
+})();
+
+/* PASS 25 */
+/* Cannapy pass 25 overlay: one standard speed for everyone */
+(function(){
+const d=Object.getOwnPropertyDescriptor(window,'SPD');
+if(d&&d.get)Object.defineProperty(window,'SPD',{configurable:true,get(){const g=gameState;if(g&&g.set&&g.set.spd!==1){const s=g.set.spd;g.set.spd=1;try{return d.get.call(window)}finally{g.set.spd=s}}return d.get.call(window)},set(v){}});
+const so=window.setOpt;window.setOpt=function(k,v){if(k==='spd'){gameState.set.spd=1;return}so(k,v)};
+function fix(){const g=gameState;if(g&&g.set)g.set.spd=1;const t=Q('#set-top');if(t&&t.textContent.includes('Game speed')&&!t.dataset.s25){t.dataset.s25=1;t.innerHTML='<div class="card"><div class="card-title">⏱️ Game speed</div><div class="card-meta">Everyone plays at the same standard speed, so competitions are fair.</div></div>'}}
+const i25=window.onload;window.onload=function(){i25();fix();setInterval(fix,2000)};
+})();
+
+/* PASS 26 */
+/* Cannapy pass 26 overlay: cups, achievements, side ventures, grand collection reward, breeder map and passport, famous strains, simple online, CBD tags */
+(function(){
+const G=()=>gameState,E=escapeHTML,prog=()=>G().unl&&G().unl.mode==='prog';
+const F=n=>{n=Math.floor(n);const a=Math.abs(n);if(a<1e4)return n.toLocaleString();for(const[s,v]of[['T',1e12],['B',1e9],['M',1e6],['K',1e3]])if(a>=v)return(n/v).toFixed(a/v<100?2:1).replace(/\.?0+$/,'')+s;return''+n};
+const X=()=>{const g=G();g.x26=g.x26||{cup:{cur:null,next:Date.now()+3*6e4,hall:[],gold:0,silver:0,bronze:0,unseen:[]},pass:{},vis:{},ven:{},grand:0,max:0,drop:0};return g.x26};
+const css=document.createElement('style');css.textContent='.cupb{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#1F1A0B;border:1px solid var(--accent-amber);color:var(--text-main);border-radius:12px;padding:10px;font-size:.9rem}.cbar2{height:6px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:4px 0}.cbar2 i{display:block;height:100%;background:var(--accent-emerald)}.rowx{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--border-color);padding:6px 0;font-size:.85rem}';document.head.appendChild(css);
+function mountPg(id,title){if(Q('#mod-'+id))return;Q('main').insertAdjacentHTML('beforeend','<section id="mod-'+id+'" class="module-section"><h2>'+title+'</h2><div id="'+id+'-c"></div></section>')}
+/* ---------- banners (stay until tapped) ---------- */
+function banner(msg,go){let c=Q('#cup-banners');if(!c){document.body.insertAdjacentHTML('beforeend','<div id="cup-banners" style="position:fixed;top:70px;left:8px;right:8px;z-index:3050;display:flex;flex-direction:column;gap:6px"></div>');c=Q('#cup-banners')}
+ while(c.children.length>=3)c.firstChild.remove();const d=document.createElement('div');d.className='cupb';d.innerHTML='<span>'+msg+'</span><span style="display:flex;gap:6px;flex:none"><button class="btn btn-emerald" style="margin:0">View</button><button class="btn" style="margin:0">✕</button></span>';
+ const b=d.querySelectorAll('button');b[0].onclick=()=>{d.remove();switchModule(go||'cups')};b[1].onclick=()=>d.remove();c.appendChild(d)}
+const tst=window.toast;window.toast=function(m){if(/\bcup\b/i.test(String(m))&&!/Trade show/.test(String(m))){banner(String(m),'cups');return}tst(m)};
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.classList&&n.classList.contains('toast')&&!n.dataset.go&&/Achievement|achievement/.test(n.textContent)){n.dataset.go='achv';n.insertAdjacentHTML('beforeend',' <span style="opacity:.7">›</span>')}}))).observe(document.body,{childList:true});
+
+/* ---------- cups ---------- */
+const CUPS=[['Emerald Cup','California'],['Cannabis Cup','Amsterdam'],['Spannabis Champions Cup','Barcelona'],['Grand Final Cup','Las Vegas']],CATS=['Open','Indica','Sativa','Hybrid'],JUDGE=['Curaleaf Holdings','Trulieve','Green Thumb Industries','Cresco Labs','Jungle Boys','Cookies','Sherbinskis','Humboldt Seed Co.','Raw Garden','710 Labs','Mendocino Twenty20'];
+const cupFee=()=>15000+G().level*500;
+const strOf=n=>G().strains.find(s=>s.name===n);
+const eligible=cat=>G().mothers.filter(m=>cat==='Open'||(STR.typeOf(strOf(m.strain)||{name:m.strain,thc:m.thc,tier:'Common'})===cat.toLowerCase()));
+function cupTick(){const x=X(),c=x.cup,now=Date.now();
+ if(c.cur&&now>=c.cur.until){judge();return}
+ if(!c.cur&&now>=c.next){const n=x.cupN=(x.cupN||0)+1,cp=CUPS[n%CUPS.length],cat=CATS[Math.floor(Math.random()*4)];c.cur={name:cp[0],place:cp[1],cat,until:now+10*6e4,entry:null};banner('🏆 <b>'+cp[0]+'</b> ('+cp[1]+') is open for entries. Category: '+cat+'. Closes in 10 minutes.','cups');renderCups()}}
+function judge(){const g=G(),x=X(),c=x.cup,cur=c.cur;c.cur=null;c.next=Date.now()+(20+Math.random()*15)*6e4;
+ if(!cur.entry){banner('🏆 '+E(cur.name)+' has closed. You did not enter this one.','cups');renderCups();return}
+ const base=18+Math.min(15,g.level*.05),res=[{n:'You',score:cur.entry.score,me:1}];[...JUDGE].sort(()=>Math.random()-.5).slice(0,7).forEach(n=>res.push({n,score:base+Math.random()*16+Math.random()*6}));res.sort((a,b)=>b.score-a.score);
+ const rank=res.findIndex(r=>r.me),m=g.level,cash=(60000+m*2500)*[3,2,1.2][rank]||0,rd=[40,25,12][rank]||0,xp=800+m*20;
+ if(rank<3){g.cash+=cash;g.rd+=rd}addXP(xp);const medal=['🥇 Gold','🥈 Silver','🥉 Bronze'][rank]||'No medal';
+ if(rank===0){x.cup.gold++;if(prog())g.unl.picks++}else if(rank===1)x.cup.silver++;else if(rank===2)x.cup.bronze++;
+ c.hall.unshift({cup:cur.name,place:cur.place,cat:cur.cat,rank:rank+1,strain:cur.entry.strain,score:+cur.entry.score.toFixed(1),t:Date.now()});c.hall=c.hall.slice(0,40);
+ const pod=res.slice(0,5).map((r,i)=>'<div class="rowx"><span>'+(i+1)+'. '+E(r.n)+(r.me?' ⭐':'')+'</span><b>'+r.score.toFixed(1)+'</b></div>').join('');
+ showModal('🏆 '+E(cur.name)+' results','<div class="card-meta">'+E(cur.entry.strain)+' placed <b>#'+(rank+1)+'</b> of '+res.length+' in '+cur.cat+'</div><div style="font-size:1.4rem;margin:6px 0"><b>'+medal+'</b></div>'+pod+'<div class="card-meta" style="margin-top:8px">'+(rank<3?'+$'+F(cash)+', +'+rd+' R&D, +XP'+(rank===0&&prog()?', and a bonus strain pick':''):'+XP for entering. Better genetics score higher.')+'</div>');
+ banner('🏆 '+E(cur.name)+' results are in: '+medal,'cups');renderCups()}
+window.cupEnter=function(){const x=X(),c=x.cup.cur,g=G();if(!c||c.entry)return;const m=g.mothers.find(y=>y.id===(Q('#cup-m')||{}).value);if(!m){toast('Pick a mother cut first');return}if(g.cash<cupFee()){toast('The entry fee is $'+F(cupFee()));return}g.cash-=cupFee();
+ const s=strOf(m.strain),score=(m.thc||s&&s.thc||20)*.55+(m.terps||(s?STR.terp(s):2))*4+Math.random()*12;c.entry={id:m.id,strain:m.strain,score};toast('Entered '+E(m.strain)+'. Results when the cup closes.');renderCups()};
+function renderCups(){const b=Q('#cups-c');if(!b||!pageOn('cups'))return;const x=X(),c=x.cup,cur=c.cur,now=Date.now();let h='';
+ if(cur){const el=eligible(cur.cat),left=Math.max(0,Math.ceil((cur.until-now)/6e4));h+='<div class="card"><div class="card-title">🏆 '+E(cur.name)+'</div><div class="card-meta">'+E(cur.place)+' · Category: <b>'+cur.cat+'</b> · closes in '+left+' min · entry fee $'+F(cupFee())+'</div>'+(cur.entry?'<div class="card-meta"><b>'+E(cur.entry.strain)+'</b> is entered. Judging happens when the cup closes.</div>':el.length?'<select id="cup-m" style="width:100%;padding:8px;background:var(--bg-base);color:var(--text-main);border:1px solid var(--border-color);border-radius:8px">'+el.map(m=>'<option value="'+m.id+'">'+E(m.strain)+' ('+m.thc+'% THC)</option>').join('')+'</select><button class="btn btn-emerald" onclick="cupEnter()">Enter this cut</button>':'<div class="card-meta">You have no mother cut that fits this category. Get one in Mothers.</div>')+'</div>'}
+ else h+='<div class="card"><div class="card-title">🏆 Cup circuit</div><div class="card-meta">The next cup opens in about '+Math.max(1,Math.ceil((c.next-now)/6e4))+' min. Emerald Cup, Cannabis Cup, Spannabis Champions Cup and the Grand Final take turns.</div></div>';
+ h+='<div class="card"><div class="card-title">🏅 Trophy shelf</div><div class="card-meta">🥇 '+c.gold+' · 🥈 '+c.silver+' · 🥉 '+c.bronze+' · each gold gives +0.5% sales (max +10%)</div>'+(c.hall.length?c.hall.slice(0,12).map(r=>'<div class="rowx"><span>'+(['🥇','🥈','🥉'][r.rank-1]||'#'+r.rank)+' '+E(r.cup)+' · '+E(r.strain)+'</span><span class="card-meta" style="margin:0">'+r.cat+'</span></div>').join(''):'<div class="card-meta">No entries yet.</div>')+'</div>';b.innerHTML=h}
+/* ---------- achievements ---------- */
+const AC=[['Level','⭐',g=>g.level,[10,50,150,400],'y'],['Harvests','🌿',g=>(g.stats||{}).h||0,[1,25,150,600],'y'],['Properties','🏢',g=>g.ownedProperties.length,[1,3,8,20],'s'],['Mother cuts','🧬',g=>g.mothers.length,[1,5,12,30],'y'],['Strains discovered','📚',g=>Object.keys(g.disc||{}).length,[10,50,200,600],'s'],['Collections completed','📖',g=>Object.keys(g.coll||{}).length,[1,5,15,40],'s'],['Network contacts','👥',g=>Object.keys((g.net||{}).signed||{}).length,[1,4,10,25],'s'],['Cup golds','🥇',g=>X().cup.gold,[1,3,8,20],'y'],['Cups entered','🏆',g=>X().cup.hall.length,[1,5,15,40],'y'],['Trade shows','🧳',g=>(g.ts||{}).count||0,[1,3,8,20],'s'],['CBD missions','🌿',g=>Object.keys((g.cbd||{}).done||{}).length,[1,3,5,7],'y'],['Breeder stamps','🧭',g=>Object.keys(X().pass).length,[1,5,15,30],'s'],['Venture levels','🏗️',g=>Object.values(X().ven).reduce((a,b)=>a+b,0),[1,5,12,25],'s'],['Peak cash','💰',g=>X().max,[1e6,1e8,1e10,1e12],'s'],['Trophies','🏆',g=>(g.badges||[]).length,[1,5,15,30],'y']];
+const TN=['Bronze','Silver','Gold','Platinum'],TV=[.001,.001,.002,.004];let am={t:0,s:0,y:0};
+function achCalc(){const now=Date.now();if(now-am.t<2000)return am;const g=G();let s=0,y=0;AC.forEach(a=>{const v=a[2](g);a[3].forEach((t,i)=>{if(v>=t){if(a[4]==='s')s+=TV[i];else y+=TV[i]}})});am={t:now,s,y};return am}
+let seen={};function achWatch(){const g=G(),x=X();x.ach=x.ach||{};AC.forEach(a=>{const v=a[2](g);let t=0;a[3].forEach((q,i)=>{if(v>=q)t=i+1});const k=a[0];if(t>(x.ach[k]||0)){if(x.ach[k]!==undefined||t>0){if(x.achInit)tst('🏅 Achievement: '+a[1]+' '+a[0]+' '+TN[t-1])}x.ach[k]=t}});x.achInit=1}
+function renderAch(){const b=Q('#achv-c');if(!b||!pageOn('achv'))return;const g=G(),c=achCalc();b.innerHTML='<div class="card"><div class="card-title">🏅 Achievement perks</div><div class="card-meta">+'+(c.s*100).toFixed(1)+'% sales · +'+(c.y*100).toFixed(1)+'% yield, from tiers you have reached.</div></div>'+AC.map(a=>{const v=a[2](g);let t=0;a[3].forEach((q,i)=>{if(v>=q)t=i+1});const nx=a[3][t],pv=t?a[3][t-1]:0;return'<div class="card"><div class="card-title">'+a[1]+' '+a[0]+' '+(t?'· '+TN[t-1]:'')+'</div><div class="card-meta">'+F(v)+(nx?' / '+F(nx)+' for '+TN[t]:' · complete')+' · perk: '+(a[4]==='s'?'sales':'yield')+'</div><div class="cbar2"><i style="width:'+(nx?Math.min(100,(v-pv)/(nx-pv)*100):100)+'%"></i></div></div>'}).join('')}
+/* ---------- side ventures ---------- */
+const VN=[['hemp','🌾 Hemp Division','Fiber, seed and CBD biomass from hemp fields.',80,5e6,4000],['merch','👕 Merch Studio','Apparel, papers and grinders with your brand. Launch drops.',100,2e7,15000],['seedbank','🧬 Seed Bank','Sell seeds from your own genetics.',110,1e7,8000],['cafe','☕ Cannabis Café','A lounge and event space.',140,4e7,30000],['yt','📺 YouTube Channel','Subscribers grow, and signed creators boost it.',170,8e7,55000]];
+const vInc=(id)=>{const v=VN.find(z=>z[0]===id),l=X().ven[id]||0,g=G();let m=1;if(id==='yt'){const cr=(window.NETWORK?NETWORK.contacts:[]).filter((c,i)=>c[1]==='creator'&&(g.net||{}).signed&&g.net.signed[i]).length;m=1+cr*.02}return v[5]*l*(1+g.level/100)*m};
+const vCost=(id)=>{const v=VN.find(z=>z[0]===id);return Math.round(v[4]*Math.pow(1.6,X().ven[id]||0))};
+window.ventBuy=function(id){const g=G(),v=VN.find(z=>z[0]===id),l=X().ven[id]||0;if(g.level<v[3]){toast('Unlocks at level '+v[3]);return}if(l>=25){toast('Max level');return}const c=vCost(id);if(g.cash<c){toast('Needs $'+F(c));return}g.cash-=c;X().ven[id]=l+1;renderVent()};
+window.merchDrop=function(){const g=G(),x=X(),l=x.ven.merch||0;if(!l){toast('Build the Merch Studio first');return}const now=Date.now();if(now<(x.drop||0)){toast('Next drop in '+Math.ceil((x.drop-now)/6e4)+' min');return}const cost=2e5*(1+g.level/20);if(g.cash<cost){toast('A drop costs $'+F(cost));return}
+ const bsel=(Q('#drop-b')||{}).value,bonus=bsel?1.5:1,th=Math.max(...g.mothers.map(m=>m.thc||20),20);g.cash-=cost;const pay=vInc('merch')*600*(0.6+Math.random())*(1+th/60)*bonus;g.cash+=pay;x.drop=now+15*6e4;
+ showModal('👕 Merch drop sold out','<div class="card-meta">'+(bsel?'Collab with <b>'+E(bsel)+'</b>. ':'')+'Revenue $'+F(pay)+' (cost $'+F(cost)+').</div>');renderVent()};
+function renderVent(){const b=Q('#ventx-c');if(!b||!pageOn('ventx'))return;const g=G(),x=X();b.innerHTML=VN.map(v=>{const l=x.ven[v[0]]||0,lk=g.level<v[3];return'<div class="card"><div class="card-title">'+v[1]+' · Lv '+l+'</div><div class="card-meta">'+v[2]+'<br>'+(lk?'🔒 Unlocks at level '+v[3]:'Income $'+F(vInc(v[0]))+'/s · next level $'+F(vCost(v[0])))+'</div>'+(lk?'':'<button class="btn btn-emerald" onclick="ventBuy(\''+v[0]+'\')">'+(l?'Upgrade':'Build')+'</button>')+(v[0]==='merch'&&l?'<select id="drop-b" style="width:100%;margin:6px 0;padding:8px;background:var(--bg-base);color:var(--text-main);border:1px solid var(--border-color);border-radius:8px"><option value="">No breeder collab</option>'+BL().map(b=>'<option value="'+E(b.name)+'">Collab: '+E(b.name)+'</option>').join('')+'</select><button class="btn" onclick="merchDrop()">🚀 Launch a drop</button>':'')+'</div>'}).join('')}
+/* ---------- breeder map and passport ---------- */
+const CY=[['Amsterdam',52.37,4.90],['Netherlands',52.13,5.29],['Spain',41.39,2.17],['Arcata',40.87,-124.08],['Humboldt',40.7,-123.9],['Mendocino',39.3,-123.4],['Colorado',39.55,-105.78],['San Francisco',37.77,-122.42],['Los Angeles',34.05,-118.24],['Pacific Northwest',45.5,-122.7],['Oregon',44,-120.5],['North Carolina',35.6,-79.8],['New Jersey',40.2,-74.7],['California',36.8,-119.4]];
+const BL=()=>G().breeders.filter(b=>b.strains.length&&window.STR&&STR.loc(b.name)&&coord(b.name));
+function coord(n){const l=STR.loc(n);if(!l)return null;const c=CY.find(z=>l.includes(z[0]));if(!c)return null;let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))%1000;return[c[1]+((h%80)-40)/100,c[2]+(((h/7)%80)-40)/100]}
+let BVL=[];
+window.bvisit=function(i){const b=typeof i==='number'?BVL[i]:G().breeders.find(x=>x.name===i);if(!b)return;const g=G(),x=X(),l=STR.loc(b.name),stamps=x.pass[b.name]||0,cd=(x.vis[b.name]||0)-Date.now(),intl=!/USA/.test(l),cost=Math.round(15000*(1+g.level/40)*(intl?2:1));
+ showModal('🌱 '+E(b.name),'<div class="card-meta">📍 '+E(l)+' · '+b.tier+' · '+b.strains.length+' strains<br>Stamps: '+stamps+(cd>0?'<br>Come back in '+Math.ceil(cd/6e4)+' min':'')+'<br>A visit costs $'+F(cost)+' and can bring a seed unlock, R&D or XP.</div><button class="btn btn-emerald" '+(cd>0?'disabled':'')+' onclick="bgo(\''+g.breeders.indexOf(b)+'\')">✈️ Visit</button>')};
+window.bgo=function(ix){const g=G(),x=X(),b=g.breeders[+ix];if(!b)return;const l=STR.loc(b.name),cost=Math.round(15000*(1+g.level/40)*(/USA/.test(l)?1:2));if(Date.now()<(x.vis[b.name]||0))return;if(g.cash<cost){toast('Needs $'+F(cost));return}g.cash-=cost;x.vis[b.name]=Date.now()+20*6e4;x.pass[b.name]=(x.pass[b.name]||0)+1;
+ const r=Math.random();let msg='';const lk=prog()?b.strains.filter(n=>{const s=strOf(n);return s&&s.levelReq>1}):[];
+ if(r<.5&&lk.length){const n=lk[Math.floor(Math.random()*lk.length)];unlockStrain(n);msg='The breeder let you unlock <b>'+E(n)+'</b>.'}else if(r<.75){const k=10+Math.floor(Math.random()*20);g.rd+=k;msg='You swapped notes: +'+k+' R&D.'}else{const k=500+g.level*30;addXP(k);msg='A great tour: +'+F(k)+' XP.'}
+ closeModal();showModal('🌱 '+E(b.name),'<div class="card-meta">'+msg+'<br>Stamps: '+x.pass[b.name]+'</div>');renderAll()};
+let lastMap=null,bm=[];
+window.mapExtra=function(GL,LM){const m=GL||LM;if(!m||m===lastMap||!window.STR)return;lastMap=m;bm.forEach(k=>{try{k.remove()}catch(e){}});bm=[];BVL=BL();
+ BVL.forEach((b,i)=>{const c=coord(b.name);if(GL){const el=document.createElement('div');el.style.cssText='font-size:20px;cursor:pointer;filter:drop-shadow(0 2px 3px #000)';el.textContent='🌱';el.addEventListener('click',e=>{e.stopPropagation();bvisit(i)});bm.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([c[1],c[0]]).addTo(GL))}
+  else{const k=L.marker(c,{icon:L.divIcon({className:'',html:'<div style="font-size:20px;cursor:pointer;filter:drop-shadow(0 2px 3px #000)">🌱</div>',iconSize:[24,24],iconAnchor:[12,24]})}).addTo(LM);k.on('click',e=>{if(e&&e.originalEvent&&L.DomEvent)L.DomEvent.stopPropagation(e);bvisit(i)});bm.push(k)}})};
+const stampPerk=()=>[3,10,20,35].filter(t=>Object.keys(X().pass).length>=t).length*.005;
+/* ---------- grand collection reward ---------- */
+function grandCheck(){const g=G(),x=X();if(x.grand||!g.coll)return;const bs=g.breeders.filter(b=>b.strains.length);if(bs.length<20||!bs.every(b=>g.coll[b.name]))return;x.grand=1;
+ if(!g.strains.some(s=>s.name==='Master Collector OG'))g.strains.push({id:'s-mc',name:'Master Collector OG',tier:'Ultra',breeder:'Legend',thc:33,levelReq:1,price:5000});const v=g.seedVault.find(s=>s.strain==='Master Collector OG');if(v)v.packs+=10;else g.seedVault.push({strain:'Master Collector OG',packs:10});
+ const c=5e6*(1+g.level);g.cash+=c;showModal('👑 Master Collector','<div class="card-meta">You completed every breeder collection.<br>• Permanent +10% to all sales<br>• Legendary strain <b>Master Collector OG</b> (10 packs)<br>• $'+F(c)+'<br>• Title: Master Collector</div>')}
+const gSale=()=>X().grand?.10:0;
+/* ---------- famous strains, CBD tags, online, techB ---------- */
+const FAM=[['Gelato','Rare',23],['Wedding Cake','Rare',25],['Runtz','Elite',25],['Sunset Sherbert','Rare',22],['Do-Si-Dos','Rare',24],['Purple Punch','Rare',22],['Gorilla Glue #4','Elite',27],['Girl Scout Cookies','Elite',26],['Granddaddy Purple','Common',20],['Pineapple Express','Common',21],['Skywalker OG','Rare',23],['Tahoe OG','Rare',23],['Headband','Rare',21],['Chemdawg','Rare',22],['Super Silver Haze','Rare',20],['Big Bud','Common',18],['Lemon Skunk','Common',19],['Thai','Common',17],['Purple Urkle','Rare',20],['Fire OG','Rare',24],['King Louis XIII','Rare',22],['SFV OG','Rare',22],['Platinum GSC','Elite',25],['Animal Cookies','Rare',23],['Mimosa','Elite',24],['Jealousy','Elite',25],['Biscotti','Elite',25],['Gary Payton','Elite',26],['London Pound Cake','Elite',25],['Ice Cream Cake','Elite',25],['Cereal Milk','Elite',24],['Blue Cheese','Rare',19],['Kosher Kush','Rare',24],['Death Star','Rare',22],['Slurricane','Elite',26],['Apple Fritter','Elite',25],['Grape Ape','Common',20],['Hawaiian Snow','Rare',22],['Acapulco Gold','Common',18],['Mango Haze','Rare',20],['Banana OG','Rare',23],['Cherry AK','Rare',20],['Forbidden Fruit','Rare',23],['Kush Mints','Elite',25],['Alien OG','Rare',24],['Tropicana Cookies','Elite',24]];
+(function(){const g=G(),N=s=>s.toLowerCase().replace(/[^a-z0-9]/g,''),have=g.strains.map(s=>N(s.name));let sid=g.strains.length+9000;const names=[];
+ FAM.forEach(f=>{const n=N(f[0]);if(have.some(h=>h===n||h.startsWith(n)))return;const lr={Common:1,Rare:2,Elite:5,Ultra:8}[f[1]];g.strains.push({id:'s-'+(sid++),name:f[0],tier:f[1],breeder:'Famous Strains',thc:f[2],levelReq:lr,price:lr*150+300});names.push(f[0])});
+ if(names.length&&!g.breeders.some(b=>b.name==='Famous Strains'))g.breeders.push({name:'Famous Strains',tier:'Rare',minLevel:6,retainer:12000,perk:'Street Value (+10%)',strains:names,contractActive:false})})();
+function cbdTags(){const g=G(),cb=g.strains.filter(s=>s.cbd);if(!cb.length)return;document.querySelectorAll('#mod-cultivation .card, #mod-cultivation .rgt').forEach(c=>{if(c.dataset.cb)return;const t=c.textContent;const s=cb.find(z=>t.includes(z.name));if(s){c.dataset.cb=1;if(c.classList.contains('rgt'))c.title='CBD '+s.cbd+'%';else c.insertAdjacentHTML('beforeend','<div class="card-meta">🌿 CBD '+s.cbd+'% · THC '+s.thc+'%</div>')}})}
+const rg=window.rgOpen;if(rg)window.rgOpen=function(i){rg(i);const x=G().canopyGrows[i],s=x&&strOf(x.strain),b=Q('#modal-body');if(s&&s.cbd&&b)b.insertAdjacentHTML('beforeend','<div class="card-meta">🌿 CBD '+s.cbd+'% (approx.) · THC '+s.thc+'%</div>')};
+function online26(){if(!pageOn('online'))return;const m=Q('#mod-online');if(!m)return;m.querySelectorAll('.card').forEach(c=>{const t=c.textContent;if(/SQL|Supabase|Project URL|anon key/i.test(t)&&!/Status/.test(t))c.style.display='none'});
+ const c=[...m.querySelectorAll('.card')].find(z=>z.textContent.includes('Status')&&!z.dataset.s26);if(!c)return;const signed=!!(window.ONL&&ONL.uid&&ONL.uid()),raw=(c.querySelector('.card-meta')||{textContent:''}).textContent;c.dataset.s26=1;
+ c.innerHTML=signed?'<div class="card-title">🌐 You are online</div><div class="card-meta">Everyone plays at the same standard speed.</div><button class="btn" onclick="olSignOut()">Sign out</button><details><summary class="card-meta">Details</summary><div class="card-meta">'+E(raw)+'</div></details>':'<div class="card-title">🌐 Play online</div><div class="card-meta">Compete and trade with other growers. One tap and you are in.</div><button class="btn btn-emerald" onclick="olConnect()">🌐 Play online</button><details><summary class="card-meta">Details</summary><div class="card-meta">'+E(raw)+'</div></details>'}
+const tb=window.techB;window.techB=function(k){let v=tb.apply(this,arguments);if(k==='sale')v+=achCalc().s+Math.min(.1,X().cup.gold*.005)+gSale();if(k==='yield')v+=achCalc().y+stampPerk();return v};
+/* ---------- collection page extras ---------- */
+function collExtra(){const b=Q('#coll-content');if(!b||!pageOn('coll'))return;const g=G(),x=X(),bs=g.breeders.filter(z=>z.strains.length),done=bs.filter(z=>(g.coll||{})[z.name]).length;let e=Q('#coll-x');if(!e){b.insertAdjacentHTML('beforeend','<div id="coll-x"></div>');e=Q('#coll-x')}
+ BVL=BL();e.innerHTML='<div class="card"><div class="card-title">👑 Grand collection reward</div><div class="card-meta">'+done+' of '+bs.length+' breeder collections complete. Finish them all for a permanent +10% to all sales, the legendary Master Collector OG, a big cash prize and the Master Collector title.'+(x.grand?'<br><b>Claimed!</b>':'')+'</div><div class="cbar2"><i style="width:'+Math.min(100,done/Math.max(1,bs.length)*100)+'%"></i></div></div><div class="card"><div class="card-title">🧭 Breeder passport</div><div class="card-meta">Visit breeders (also on the map). Stamps: '+Object.keys(x.pass).length+'. Perks at 3, 10, 20 and 35 stamps.</div>'+BVL.map((z,i)=>'<div class="rowx"><span>🌱 '+E(z.name)+' <span class="card-meta" style="margin:0">'+E(STR.loc(z.name))+'</span></span><button class="btn" style="margin:0" onclick="bvisit('+i+')">'+((x.pass[z.name]||0)?'✔ ':'')+'Visit</button></div>').join('')+'</div>'}
+/* ---------- wiring ---------- */
+const r26=window.renderAll;window.renderAll=function(){r26();cbdTags();online26();collExtra();renderCups();renderAch();renderVent()};
+const i26=window.onload;window.onload=function(){i26();mountPg('cups','🏆 Cups');mountPg('achv','🏅 Achievements');mountPg('ventx','🏗️ Ventures+');X().cup.unseen.forEach(m=>banner(m,'cups'));X().cup.unseen=[];
+ const sm=window.switchModule;window.switchModule=function(id){sm(id);if(id==='cups')renderCups();if(id==='achv')renderAch();if(id==='ventx')renderVent();if(id==='coll')collExtra();if(id==='online')setTimeout(online26,300)};
+ let t=0;setInterval(()=>{t++;const g=G(),x=X();if(g.cash>x.max)x.max=g.cash;let inc=0;VN.forEach(v=>{if(x.ven[v[0]])inc+=vInc(v[0])});if(inc)g.cash+=inc;if(t%5===0){cupTick();grandCheck();achWatch()}if(t%2===0){renderCups();online26();if(pageOn('ventx'))renderVent()}if(t%3===0)collExtra()},1000)};
 })();
 
 </script>
