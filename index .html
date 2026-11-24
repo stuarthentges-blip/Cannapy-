@@ -85,7 +85,51 @@
     </style>
     
 </head>
-<body><script>window.CANNAPY_SB={url:"https://yxaqnzapkvrneyokmmgp.supabase.co",key:"sb_publishable_9x5xzTZ6IDGg6KNuYQw6wg_fAOFabuf"};</script>
+<body><script>
+/* Cannapy pass 32 overlay: save safety (backups, protected load, restore), diagnostics, persistent storage */
+(function(){
+const K='cannapy_empire_ultimate_save',MK='cannapy_bkmeta',BKP='cannapy_bk_';
+const ls=()=>{try{return localStorage}catch(e){return null}};
+const raw0=(()=>{try{return localStorage.getItem(K)}catch(e){return null}})();
+window.__S0=raw0;window.__errs=[];window.__hold=!!raw0;
+{const si0=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if((window.__hold||window.__protect)&&k===K&&this===localStorage)return;return si0.apply(this,arguments)}}
+window.addEventListener('error',e=>{__errs.push(String(e.message)+' @'+String(e.filename||'').split('/').pop()+':'+e.lineno);if(__errs.length>12)__errs.shift()});
+window.addEventListener('unhandledrejection',e=>{__errs.push('promise: '+String((e.reason&&e.reason.message)||e.reason));if(__errs.length>12)__errs.shift()});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+/* ----- backups: 5 rolling slots plus one "best" slot that only a better save can replace ----- */
+const meta=()=>{try{return JSON.parse(localStorage.getItem(MK))||[]}catch(e){return[]}};
+const setMeta=m=>{try{localStorage.setItem(MK,JSON.stringify(m))}catch(e){}};
+const info=r=>{try{const s=JSON.parse(r);return{lvl:s.level||1,cash:s.cash||0}}catch(e){return{lvl:0,cash:0}}};
+function snap(raw,why){if(!raw||raw.length<200||raw.length>1500000)return;let m=meta();const last=m.filter(x=>x.k!=='best').slice(-1)[0];if(last&&localStorage.getItem(BKP+last.n)===raw)return;
+ const i=info(raw),n=Date.now();try{localStorage.setItem(BKP+n,raw)}catch(e){m.filter(x=>x.k!=='best').slice(0,2).forEach(x=>{localStorage.removeItem(BKP+x.n)});m=m.filter(x=>localStorage.getItem(BKP+x.n));try{localStorage.setItem(BKP+n,raw)}catch(e2){return}}
+ m.push({n,t:n,lvl:i.lvl,cash:i.cash,len:raw.length,why});
+ const roll=m.filter(x=>x.k!=='best');while(roll.length>5){const o=roll.shift();m=m.filter(x=>x!==o);if(!(m.some(x=>x.k==='best'&&x.n===o.n)))localStorage.removeItem(BKP+o.n)}
+ const bi=m.findIndex(x=>x.k==='best');if(bi<0||i.lvl>m[bi].lvl||(i.lvl===m[bi].lvl&&i.cash>m[bi].cash)){if(bi>=0){const ob=m[bi];m.splice(bi,1);if(!m.some(x=>x.n===ob.n))localStorage.removeItem(BKP+'best'+ob.n)}try{localStorage.setItem(BKP+'best'+n,raw);m.push({n,t:n,lvl:i.lvl,cash:i.cash,len:raw.length,why:'best',k:'best'})}catch(e){}}
+ setMeta(m)}
+snap(raw0,'before this update');
+setInterval(()=>{try{snap(localStorage.getItem(K),'auto')}catch(e){}},300000);
+const rawOf=x=>localStorage.getItem(x.k==='best'?BKP+'best'+x.n:BKP+x.n);
+/* ----- protect a good save when the loaded game looks wrong ----- */
+function protect(why){window.__protect=1;const sv=window.saveGameSave;window.saveGameSave=function(){if(window.__protect)return};
+
+ const m=meta().slice().reverse();showModal('🛟 Your save is safe','<div class="card-meta">The game did not load your save correctly ('+escapeHTML(why)+'). Nothing has been overwritten.</div>'+(m.length?m.map(x=>'<button class="btn" style="text-align:left" onclick="restoreBk(\''+(x.k==='best'?'best':'')+x.n+'\')">'+(x.k==='best'?'⭐ Best save':'Backup')+' · Lv '+x.lvl+' · $'+Math.round(x.cash).toLocaleString()+' · '+new Date(x.t).toLocaleString()+'</button>').join(''):'')+'<button class="btn btn-emerald" onclick="location.reload()">Try loading again</button><button class="btn" onclick="__protect=0;closeModal();toast(\'Saving is back on\')">Start fresh anyway</button>')}
+window.restoreBk=function(id){const m=meta(),best=String(id).startsWith('best'),n=String(id).replace('best',''),x=m.find(z=>String(z.n)===n&&((z.k==='best')===best));if(!x)return;const r=rawOf(x);if(!r)return toast('That backup is missing');if(!confirm('Restore Lv '+x.lvl+' from '+new Date(x.t).toLocaleString()+'? Your current game will be replaced.'))return;snap(localStorage.getItem(K),'before restore');window.__protect=0;window.__hold=0;localStorage.setItem(K,r);window.__hold=1;location.reload()};
+window.downloadBackup=function(){try{saveGameSave()}catch(e){}const r=localStorage.getItem(K)||'';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([r],{type:'application/json'}));a.download='cannapy-save-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup file saved to your downloads')};
+function card(){const p=document.querySelector('.set-pane[data-k=data]');if(!p)return;let c=document.getElementById('bk-card');if(!c){p.insertAdjacentHTML('afterbegin','<div class="card" id="bk-card"></div>');c=document.getElementById('bk-card')}
+ const m=meta().slice().reverse();c.innerHTML='<div class="card-title">🛟 Backups</div><div class="card-meta">The game keeps automatic backups on this phone, plus your best save. Download a file now and then to keep a copy off the browser.</div><button class="btn btn-emerald" onclick="downloadBackup()">⬇ Download backup file</button>'+m.map(x=>'<div class="card-meta" style="display:flex;justify-content:space-between;gap:6px;align-items:center;margin:4px 0"><span>'+(x.k==='best'?'⭐ ':'')+'Lv '+x.lvl+' · $'+Math.round(x.cash).toLocaleString()+'<br>'+new Date(x.t).toLocaleString()+'</span><button class="btn" style="margin:0;width:auto" onclick="restoreBk(\''+(x.k==='best'?'best':'')+x.n+'\')">Restore</button></div>').join('')}
+/* ----- Online page fallback with the real error ----- */
+let blankSince=0;
+function online(){if(!window.pageOn||!pageOn('online'))return blankSince=0;const m=document.getElementById('mod-online');if(!m)return;const vis=[...m.querySelectorAll('.card')].filter(c=>c.style.display!=='none').length;
+ if(vis>0){blankSince=0;return}blankSince=blankSince||Date.now();if(Date.now()-blankSince<2500)return;let f=document.getElementById('online-fb');if(!f){m.insertAdjacentHTML('beforeend','<div class="card" id="online-fb"></div>');f=document.getElementById('online-fb')}
+ m.querySelectorAll('.card').forEach(c=>{if(c.id!=='online-fb')c.style.display=''});
+ f.innerHTML='<div class="card-title">🌐 Online</div><div class="card-meta">This page did not draw. '+(__errs.length?'Last error: '+escapeHTML(__errs[__errs.length-1]):'No error was reported.')+'</div><button class="btn btn-emerald" onclick="location.reload()">Reload</button>'}
+window.addEventListener('load',()=>setTimeout(function(){
+ let saved=null,bad=!!window.__loadErr;if(raw0){try{saved=JSON.parse(raw0)}catch(e){bad=true}}
+ if(bad)protect('the saved data could not be read');else if(saved&&(saved.level||1)>(gameState.level||1))protect('it loaded at level '+(gameState.level||1)+' instead of '+saved.level);else window.__hold=0;
+ setInterval(()=>{card();online()},2000)},0));
+})();
+
+</script><script>window.CANNAPY_SB={url:"https://yxaqnzapkvrneyokmmgp.supabase.co",key:"sb_publishable_9x5xzTZ6IDGg6KNuYQw6wg_fAOFabuf"};</script>
 
     <div class="drawer-backdrop" id="drawer-backdrop" onclick="toggleDrawer()"></div>
     <div class="slide-drawer" id="slide-drawer">
@@ -1180,7 +1224,7 @@
         function saveGameSave() { localStorage.setItem('cannapy_empire_ultimate_save', JSON.stringify(gameState)); }
         
         function loadGameSave() {
-            try { const s = localStorage.getItem('cannapy_empire_ultimate_save'); if (s) gameState = Object.assign({}, gameState, JSON.parse(s)); } catch (e) {}
+            try { const s = localStorage.getItem('cannapy_empire_ultimate_save'); if (s) gameState = Object.assign({}, gameState, JSON.parse(s)); } catch (e) { window.__loadErr = e; }
             gameState.ownedProperties.forEach((p, i) => { if (!p.id) p.id = 'prop-' + i; p.wings = p.wings || []; });
             gameState.canopyGrows.forEach(g => { if (!g.pid) g.pid = gameState.ownedProperties[0].id; });
             gameState.mothers.forEach(m => { if (!m.gen) m.gen = 'Base'; });
@@ -3367,7 +3411,7 @@ function renderVent(){const b=Q('#ventx-c');if(!b||!pageOn('ventx'))return;const
 /* ---------- breeder map and passport ---------- */
 const CY=[['Amsterdam',52.37,4.90],['Netherlands',52.13,5.29],['Spain',41.39,2.17],['Arcata',40.87,-124.08],['Humboldt',40.7,-123.9],['Mendocino',39.3,-123.4],['Colorado',39.55,-105.78],['San Francisco',37.77,-122.42],['Los Angeles',34.05,-118.24],['Pacific Northwest',45.5,-122.7],['Oregon',44,-120.5],['North Carolina',35.6,-79.8],['New Jersey',40.2,-74.7],['California',36.8,-119.4]];
 const BL=()=>G().breeders.filter(b=>b.strains.length&&window.STR&&STR.loc(b.name)&&coord(b.name));
-function coord(n){const l=STR.loc(n);if(!l)return null;const c=CY.find(z=>l.includes(z[0]));if(!c)return null;let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))%1000;return[c[1]+((h%80)-40)/100,c[2]+(((h/7)%80)-40)/100]}
+function coord(n){const l=STR.loc(n);if(!l)return null;const c=CY.find(z=>l.includes(z[0]));if(!c)return null;let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))%1000;const wc=c[2]<-117&&c[2]>-126&&c[1]>32&&c[1]<49;return[c[1]+((h%50)-25)/100,c[2]+(wc?.3+((h/7)%40)/100:(((h/7)%60)-30)/100)]}
 let BVL=[];
 window.bvisit=function(i){const b=typeof i==='number'?BVL[i]:G().breeders.find(x=>x.name===i);if(!b)return;const g=G(),x=X(),l=STR.loc(b.name),stamps=x.pass[b.name]||0,cd=(x.vis[b.name]||0)-Date.now(),intl=!/USA/.test(l),cost=Math.round(15000*(1+g.level/40)*(intl?2:1));
  showModal('🌱 '+E(b.name),'<div class="card-meta">📍 '+E(l)+' · '+b.tier+' · '+b.strains.length+' strains<br>Stamps: '+stamps+(cd>0?'<br>Come back in '+Math.ceil(cd/6e4)+' min':'')+'<br>A visit costs $'+F(cost)+' and can bring a seed unlock, R&D or XP.</div><button class="btn btn-emerald" '+(cd>0?'disabled':'')+' onclick="bgo(\''+g.breeders.indexOf(b)+'\')">✈️ Visit</button>')};
@@ -3393,7 +3437,7 @@ const FAM=[['Gelato','Rare',23],['Wedding Cake','Rare',25],['Runtz','Elite',25],
  if(names.length&&!g.breeders.some(b=>b.name==='Famous Strains'))g.breeders.push({name:'Famous Strains',tier:'Rare',minLevel:6,retainer:12000,perk:'Street Value (+10%)',strains:names,contractActive:false})})();
 function cbdTags(){const g=G(),cb=g.strains.filter(s=>s.cbd);if(!cb.length)return;document.querySelectorAll('#mod-cultivation .card, #mod-cultivation .rgt').forEach(c=>{if(c.dataset.cb)return;const t=c.textContent;const s=cb.find(z=>t.includes(z.name));if(s){c.dataset.cb=1;if(c.classList.contains('rgt'))c.title='CBD '+s.cbd+'%';else c.insertAdjacentHTML('beforeend','<div class="card-meta">🌿 CBD '+s.cbd+'% · THC '+s.thc+'%</div>')}})}
 const rg=window.rgOpen;if(rg)window.rgOpen=function(i){rg(i);const x=G().canopyGrows[i],s=x&&strOf(x.strain),b=Q('#modal-body');if(s&&s.cbd&&b)b.insertAdjacentHTML('beforeend','<div class="card-meta">🌿 CBD '+s.cbd+'% (approx.) · THC '+s.thc+'%</div>')};
-function online26(){if(!pageOn('online'))return;const m=Q('#mod-online');if(!m)return;m.querySelectorAll('.card').forEach(c=>{const t=c.textContent;if(/SQL|Supabase|Project URL|anon key/i.test(t)&&!/Status/.test(t))c.style.display='none'});
+function online26(){if(!pageOn('online'))return;const m=Q('#mod-online');if(!m)return;m.querySelectorAll('.card').forEach(c=>{const t=c.textContent;if(/Project URL|anon key|SQL Editor|create table/i.test(t)&&!c.dataset.s26&&!/Play online|You are online|Status/.test(t))c.style.display='none'});
  const c=[...m.querySelectorAll('.card')].find(z=>z.textContent.includes('Status')&&!z.dataset.s26);if(!c)return;const signed=!!(window.ONL&&ONL.uid&&ONL.uid()),raw=(c.querySelector('.card-meta')||{textContent:''}).textContent;c.dataset.s26=1;
  c.innerHTML=signed?'<div class="card-title">🌐 You are online</div><div class="card-meta">Everyone plays at the same standard speed.</div><button class="btn" onclick="olSignOut()">Sign out</button><details><summary class="card-meta">Details</summary><div class="card-meta">'+E(raw)+'</div></details>':'<div class="card-title">🌐 Play online</div><div class="card-meta">Compete and trade with other growers. One tap and you are in.</div>'+(window.olErrHtml?olErrHtml(raw):'')+'<button class="btn btn-emerald" onclick="olConnect()">🌐 Play online</button><details><summary class="card-meta">Details</summary><div class="card-meta">'+E(raw)+'</div></details>'}
 const tb=window.techB;window.techB=function(k){let v=tb.apply(this,arguments);if(k==='sale')v+=achCalc().s+Math.min(.1,X().cup.gold*.005)+gSale();if(k==='yield')v+=achCalc().y+stampPerk();return v};
@@ -3717,6 +3761,28 @@ window.tsAct=function(a){const g=G(),t=g.ts;if(a==='walk'){tsFloor();return}
   else toast('🏆 A cup is already open. Enter your cut now.');switchModule('cups');renderAll();return}
  return ta(a)};
 const r31=window.renderAll;window.renderAll=function(){r31()};
+})();
+
+</script>
+<script>
+/* Cannapy pass 33 overlay: fix the server connection from inside the game */
+(function(){
+const E=escapeHTML,LSK='cannapy_backend';
+const cur=()=>{try{return JSON.parse(localStorage.getItem(LSK))||{}}catch(e){return{}}};
+const draft=window._srv=window._srv||{};
+window.srvIn=(k,v)=>{draft[k]=v};
+window.srvTest=async function(){const url=String(draft.url!==undefined?draft.url:cur().url||'').trim().replace(/\/+$/,''),key=String(draft.key!==undefined?draft.key:cur().key||'').trim(),out=document.getElementById('srv-out');if(!out)return;out.textContent='Testing...';
+ if(!/^https:\/\/[a-z0-9]{20}\.supabase\.co$/.test(url)){out.innerHTML='⚠️ The address should look like https://xxxxxxxxxxxxxxxxxxxx.supabase.co (20 letters, ending in .supabase.co).';return}
+ if(key.length<20){out.innerHTML='⚠️ Paste the Publishable key (it starts with sb_publishable_).';return}
+ try{const r=await fetch(url+'/auth/v1/signup',{method:'POST',headers:{apikey:key,'Content-Type':'application/json'},body:'{}'});let j={};try{j=await r.json()}catch(e){}
+  if(r.ok&&j.access_token)out.innerHTML='✅ Connected and anonymous sign-in works. Tap Save.';
+  else if(r.status===401)out.innerHTML='🔑 The address answers, but Supabase rejects this key ('+E(j.message||'Invalid API key')+'). Copy the Publishable key again from Project Settings, API Keys.';
+  else out.innerHTML='⚠️ ['+r.status+'] '+E(j.msg||j.message||j.error_description||j.error||'Unexpected reply')+(j.error_code==='anonymous_provider_disabled'?'<br>Turn on Allow anonymous sign-ins under Authentication, Sign In / Providers.':'')}
+ catch(e){out.innerHTML='❌ Cannot reach that address. Check the Project URL for typos. ('+E(String(e.message))+')'}};
+window.srvSave=function(){const url=String(draft.url!==undefined?draft.url:cur().url||'').trim().replace(/\/+$/,''),key=String(draft.key!==undefined?draft.key:cur().key||'').trim();if(!url||!key)return toast('Fill in both boxes');localStorage.setItem(LSK,JSON.stringify({url,key}));try{localStorage.removeItem('cannapy_auth')}catch(e){}toast('Saved. Reloading...');setTimeout(()=>location.reload(),700)};
+function card(){if(!window.pageOn||!pageOn('online'))return;const m=document.getElementById('mod-online');if(!m||document.getElementById('srv-card'))return;const c=cur(),open=window._olE&&Date.now()-window._olE.t<180000;
+ m.insertAdjacentHTML('beforeend','<div class="card" id="srv-card"><details'+(open?' open':'')+'><summary class="card-title" style="cursor:pointer">🔑 Server settings</summary><div class="card-meta">Paste the Project URL and the Publishable key from your Supabase project (Project Settings, API Keys). They must come from the same project.</div><input value="'+E(draft.url!==undefined?draft.url:c.url||'')+'" oninput="srvIn(\'url\',this.value)" placeholder="https://xxxxxxxxxxxxxxxxxxxx.supabase.co" style="width:100%;padding:10px;background:var(--bg-base);color:var(--text-main);border:1px solid var(--border-color);border-radius:10px;margin-bottom:6px"><input value="'+E(draft.key!==undefined?draft.key:c.key||'')+'" oninput="srvIn(\'key\',this.value)" placeholder="sb_publishable_..." style="width:100%;padding:10px;background:var(--bg-base);color:var(--text-main);border:1px solid var(--border-color);border-radius:10px;margin-bottom:6px"><button class="btn" onclick="srvTest()">Test connection</button><div class="card-meta" id="srv-out" style="word-break:break-word"></div><button class="btn btn-emerald" onclick="srvSave()">Save and reload</button></details></div>')}
+window.addEventListener('load',()=>setTimeout(()=>setInterval(card,1500),0));
 })();
 
 </script>
